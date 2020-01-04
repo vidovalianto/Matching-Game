@@ -6,22 +6,35 @@
 //  Copyright © 2020 Vido Valianto. All rights reserved.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
 final class GridViewController: UIViewController {
     private let productManager = ProductManager.shared
+    private let gamePM = GamePlayManager.shared
+
     private var col: Int = 3
-    public var productImages = [ProductImages]()
+    private var cancellable: AnyCancellable?
+
+    public var productImages = [ProductImages]() {
+        didSet {
+            self.items = Array(Array(repeating: Array(productImages[0...5]),
+                                     count: self.gamePM.numOfMatch.value).joined())
+        }
+    }
+
     public var products = [Product]() {
         didSet {
             self.productImages = self.products.compactMap { product -> ProductImages? in
                 return product.images.first
             }
-            self.imageLoaded()
         }
     }
-    let sections = [Section.main]
+
+    private var items = [ProductImages]()
+
+    private let sections = [Section.main]
 
     convenience init(col: Int? = 3) {
         self.init()
@@ -34,15 +47,18 @@ final class GridViewController: UIViewController {
         case main = "Main"
     }
 
-    var dataSource: UICollectionViewDiffableDataSource<Section, ProductImages>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<Section, Int>! = nil
     var collectionView: UICollectionView! = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureHierarchy()
         configureDataSource()
-        self.productManager.$products.sink { self.products = $0.products }.cancel()
-        
+        cancellable = self.productManager.$products.sink { self.products = $0.products }
+    }
+
+    deinit {
+        cancellable?.cancel()
     }
 }
 
@@ -81,8 +97,8 @@ extension GridViewController {
     }
 
     private func configureDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, ProductImages>(collectionView: collectionView)
-        { (collectionView: UICollectionView, indexPath: IndexPath, identifier: ProductImages)
+        dataSource = UICollectionViewDiffableDataSource<Section, Int>(collectionView: collectionView)
+        { (collectionView: UICollectionView, indexPath: IndexPath, identifier: Int)
             -> UICollectionViewCell? in
             // Get a cell of the desired kind.
             guard let cell = collectionView.dequeueReusableCell(
@@ -91,50 +107,51 @@ extension GridViewController {
 
             // Populate the cell with our item description.
             cell.contentView.backgroundColor = .white
-            cell.configureData(productImages: identifier)
+            cell.configureData(productImages: self.items[identifier])
 
             // Return the cell.
             return cell
         }
 
-        // initial data
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ProductImages>()
-
-        for section in sections {
-            snapshot.appendSections([section])
-            snapshot.appendItems(productImages)
-        }
-
-        dataSource.apply(snapshot, animatingDifferences: false)
+        dataSource.apply(createDuplicate(), animatingDifferences: false)
     }
 
-    private func randomizeSnapshot() -> NSDiffableDataSourceSnapshot
-        <Section, ProductImages> {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ProductImages>()
-        for section in sections {
-            snapshot.appendSections([section])
-            snapshot.appendItems(productImages)
-            
-        }
-        return snapshot
-    }
+    private func createDuplicate() -> NSDiffableDataSourceSnapshot
+        <Section, Int> {
+            var snapshot = NSDiffableDataSourceSnapshot<Section, Int>()
 
-
-}
-
-extension GridViewController {
-    func imageLoaded() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, ProductImages>()
-        snapshot.appendSections([Section.main])
-        print(self.productImages.count)
-        snapshot.appendItems(productImages, toSection: Section.main)
-//        dataSource.apply(snapshot, animatingDifferences: true)
+            for section in sections {
+                snapshot.appendSections([section])
+                snapshot.appendItems(Array(0...items.count-1))
+            }
+            return snapshot
     }
 }
 
 extension GridViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath[1], productImages[indexPath[1]].id)
+        print(indexPath[1], self.items[indexPath[1]].id)
+
+        if self.gamePM.selectedItem != self.items[indexPath[1]].id {
+            print("dif")
+            self.gamePM.selectedItemsIndex = [IndexPath]()
+            self.gamePM.selectedItem = self.items[indexPath[1]].id
+        }
+        self.gamePM.selectedItemsIndex.append(indexPath)
+
+        if self.gamePM.selectedItemsIndex.count == self.gamePM.numOfMatch.value {
+            self.gamePM.foundPairs.send(self.gamePM.foundPairs.value+1)
+            print("match")
+
+            self.gamePM.selectedItemsIndex.map { index in
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridCell.reuseIdentifier, for: index) as! GridCell
+                cell.contentView.isHidden = true
+                print(cell,index)
+            }
+
+            self.gamePM.selectedItemsIndex = [IndexPath]()
+        }
+
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 }

@@ -12,7 +12,8 @@ final class ProductImages: NSObject, Decodable, Identifiable {
     internal let id: Int
     public let imageURL: String
 
-    public init(id: Int, imageUrl: String) {
+    public init(id: Int,
+                imageUrl: String) {
         self.id = id
         self.imageURL = imageUrl
     }

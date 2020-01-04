@@ -40,26 +40,6 @@ final class ImageCachingManager {
         self.config = config
     }
 
-//    public func getImage(url: String, completion: @escaping (_ image: UIImage?, _ error: Error? ) -> Void) {
-//        if let cachedImage = imageCache.object(forKey: url as NSString) {
-////            print("from cache")
-//                  completion(cachedImage, nil)
-//        } else {
-////            print("from network")
-//            networkManager.downloadImage(url: url) { result in
-//                switch result {
-//                case .failure(let error):
-//                    completion(nil,error)
-//                case .success(let image):
-//                    if let image = image {
-//                        self.imageCache.setObject(image, forKey: url as NSString)
-//                        completion(image, nil)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     public func loadImage(url: URL) -> AnyPublisher<UIImage?, Never> {
         if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
             print("from cache")

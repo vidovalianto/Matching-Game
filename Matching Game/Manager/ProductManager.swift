@@ -16,6 +16,4 @@ final class ProductManager: ObservableObject {
 
     @Published
     public var products: Products = Products(products: [Product]()) 
-
-
 }

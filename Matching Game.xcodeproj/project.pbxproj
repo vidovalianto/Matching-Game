@@ -23,6 +23,7 @@
 		2640F3F223BF552900EA2E12 /* GridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F123BF552900EA2E12 /* GridCell.swift */; };
 		2640F3F423BF75F900EA2E12 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F323BF75F900EA2E12 /* Extension.swift */; };
 		2640F3F623C042C600EA2E12 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F523C042C600EA2E12 /* ProductManager.swift */; };
+		2640F3FA23C0A26600EA2E12 /* GamePlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F923C0A26600EA2E12 /* GamePlayManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		2640F3F123BF552900EA2E12 /* GridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCell.swift; sourceTree = "<group>"; };
 		2640F3F323BF75F900EA2E12 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2640F3F523C042C600EA2E12 /* ProductManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductManager.swift; sourceTree = "<group>"; };
+		2640F3F923C0A26600EA2E12 /* GamePlayManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePlayManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				2640F3DE23BD9C4600EA2E12 /* NetworkManager.swift */,
+				2640F3F923C0A26600EA2E12 /* GamePlayManager.swift */,
 				2640F3ED23BE2CD600EA2E12 /* ImageCachingManager.swift */,
 				2640F3F523C042C600EA2E12 /* ProductManager.swift */,
 			);
@@ -213,6 +216,7 @@
 				2640F3CA23BC5F9700EA2E12 /* SceneDelegate.swift in Sources */,
 				2640F3E523BDF8A600EA2E12 /* Product.swift in Sources */,
 				2640F3F223BF552900EA2E12 /* GridCell.swift in Sources */,
+				2640F3FA23C0A26600EA2E12 /* GamePlayManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

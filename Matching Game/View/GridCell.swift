@@ -20,7 +20,7 @@ class GridCell: UICollectionViewCell {
         return view
     }()
 
-    private let backgroundImage: UIImageView = {
+    public let backgroundImage: UIImageView = {
         let backgroundImage = UIImageView(frame: UIScreen.main.bounds)
         backgroundImage.contentMode = UIView.ContentMode.scaleAspectFit
         backgroundImage.translatesAutoresizingMaskIntoConstraints = false
@@ -55,12 +55,31 @@ class GridCell: UICollectionViewCell {
         backgroundImage.alpha = 0.0
         animator?.stopAnimation(false)
         backgroundImage.image = image
-        animator = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3, delay: 0, options: .curveLinear, animations: {
+        animator = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3,
+                                                                  delay: 0,
+                                                                  options: .curveLinear,
+                                                                  animations: {
             self.backgroundImage.alpha = 1.0
         })
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.animator?.pauseAnimation()
+            self.animator?.stopAnimation(true)
+            self.animator?.finishAnimation(at: .current)
+        }
+    }
+
+    public func hideImage() {
+        backgroundImage.alpha = 1.0
+        animator?.stopAnimation(false)
+        animator = UIViewPropertyAnimator
+            .runningPropertyAnimator(withDuration: 0.3,
+                                     delay: 0,
+                                     options: .curveLinear,
+                                     animations: {
+            self.backgroundImage.alpha = 0.0
+        })
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.animator?.stopAnimation(true)
             self.animator?.finishAnimation(at: .current)
         }
@@ -82,13 +101,13 @@ extension GridCell {
         let inset = CGFloat(10)
         NSLayoutConstraint.activate([
             cardView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
-                                           constant: inset),
+                                              constant: inset),
             cardView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor,
-                                            constant: -inset),
+                                               constant: -inset),
             cardView.topAnchor.constraint(equalTo: contentView.topAnchor,
-                                       constant: inset),
+                                          constant: inset),
             cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,
-                                          constant: -inset),
+                                             constant: -inset),
         ])
         cardView.addSubview(backgroundImage)
         NSLayoutConstraint.activate([

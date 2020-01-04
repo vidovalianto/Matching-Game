@@ -9,7 +9,6 @@
 import UIKit
 
 final class DashboardViewController: UIViewController {
-
     private let startBtn: UIButton = {
         let button = UIButton()
         button.setTitle("Start", for: .normal)
@@ -17,14 +16,11 @@ final class DashboardViewController: UIViewController {
         button.addTarget(self, action: #selector(startGame), for: .touchUpInside)
         button.backgroundColor = .brown
         button.translatesAutoresizingMaskIntoConstraints = false
-//        button.sizeToFit()
         return button
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-
         initStartBtn()
     }
 

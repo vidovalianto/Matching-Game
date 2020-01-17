@@ -11,11 +11,14 @@ import UIKit
 
 class GridCell: UICollectionViewCell {
     static let reuseIdentifier = "grid-cell"
+    public var productImages: ProductImages?
     private var cancellable: AnyCancellable?
     private var animator: UIViewPropertyAnimator?
-    private let cardView: UIView = {
+
+    public let cardView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10
+        view.backgroundColor = .tertiarySystemFill
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -27,9 +30,25 @@ class GridCell: UICollectionViewCell {
         return backgroundImage
     }()
 
+    public let foregroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        view.layer.cornerRadius = 10
+        view.layer.borderColor = UIColor.secondarySystemFill.cgColor
+        view.layer.borderWidth = 5
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    public let foregroundImage: UIImageView = {
+        let foregroundImage = UIImageView(frame: UIScreen.main.bounds)
+        foregroundImage.contentMode = UIView.ContentMode.scaleToFill
+        foregroundImage.translatesAutoresizingMaskIntoConstraints = false
+        return foregroundImage
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .black
         configure()
     }
 
@@ -42,41 +61,34 @@ class GridCell: UICollectionViewCell {
         super.prepareForReuse()
         backgroundImage.image = nil
         backgroundImage.alpha = 0.0
+
+        foregroundImage.image = nil
+        foregroundImage.alpha = 0.0
+
         animator?.stopAnimation(true)
         cancellable?.cancel()
     }
 
     public func configureData(productImages: ProductImages) {
         cancellable = loadImage(productImages: productImages).sink { [unowned self] image in
-            self.showImage(image: image) }
+            DispatchQueue.main.async {
+                self.showImage(image: image)
+            }
+        }
     }
 
     private func showImage(image: UIImage?) {
         backgroundImage.alpha = 0.0
+        foregroundImage.alpha = 0.0
         animator?.stopAnimation(false)
         backgroundImage.image = image
+        foregroundImage.image = UIImage(named: "shopify")
         animator = UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.3,
                                                                   delay: 0,
                                                                   options: .curveLinear,
                                                                   animations: {
             self.backgroundImage.alpha = 1.0
-        })
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.animator?.stopAnimation(true)
-            self.animator?.finishAnimation(at: .current)
-        }
-    }
-
-    public func hideImage() {
-        backgroundImage.alpha = 1.0
-        animator?.stopAnimation(false)
-        animator = UIViewPropertyAnimator
-            .runningPropertyAnimator(withDuration: 0.3,
-                                     delay: 0,
-                                     options: .curveLinear,
-                                     animations: {
-            self.backgroundImage.alpha = 0.0
+            self.foregroundImage.alpha = 1.0
         })
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -97,6 +109,7 @@ class GridCell: UICollectionViewCell {
 
 extension GridCell {
     public func configure() {
+        self.contentView.layer.cornerRadius = 10
         self.contentView.addSubview(cardView)
         let inset = CGFloat(10)
         NSLayoutConstraint.activate([
@@ -109,12 +122,29 @@ extension GridCell {
             cardView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,
                                              constant: -inset),
         ])
+
         cardView.addSubview(backgroundImage)
         NSLayoutConstraint.activate([
             backgroundImage.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
             backgroundImage.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             backgroundImage.topAnchor.constraint(equalTo: cardView.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
+        ])
+
+        cardView.addSubview(foregroundView)
+        NSLayoutConstraint.activate([
+            foregroundView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
+            foregroundView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
+            foregroundView.topAnchor.constraint(equalTo: cardView.topAnchor),
+            foregroundView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
+        ])
+
+        foregroundView.addSubview(foregroundImage)
+        NSLayoutConstraint.activate([
+            foregroundImage.leadingAnchor.constraint(equalTo: foregroundView.leadingAnchor),
+            foregroundImage.trailingAnchor.constraint(equalTo: foregroundView.trailingAnchor),
+            foregroundImage.topAnchor.constraint(equalTo: foregroundView.topAnchor),
+            foregroundImage.bottomAnchor.constraint(equalTo: foregroundView.bottomAnchor)
         ])
     }
 }

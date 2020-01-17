@@ -42,14 +42,13 @@ final class ImageCachingManager {
 
     public func loadImage(url: URL) -> AnyPublisher<UIImage?, Never> {
         if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
-            print("from cache")
             return Just(cachedImage).eraseToAnyPublisher()
         } else {
             let cancellable = networkManager.loadImage(url: url, queue: backgroundQueue)
             let _ = cancellable.sink { if let image = $0 {
                 self.imageCache.setObject(image, forKey: url.absoluteString as NSString)
                 }
-            }
+            }.cancel()
             return cancellable
         }
     }

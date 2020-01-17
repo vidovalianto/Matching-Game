@@ -11,6 +11,8 @@ import Foundation
 final class ProductImages: NSObject, Decodable, Identifiable {
     internal let id: Int
     public let imageURL: String
+    public var isMatch = false
+    public var clickIndex = [Int]()
 
     public init(id: Int,
                 imageUrl: String) {

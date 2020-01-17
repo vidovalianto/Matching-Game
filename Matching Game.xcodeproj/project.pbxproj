@@ -24,6 +24,9 @@
 		2640F3F423BF75F900EA2E12 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F323BF75F900EA2E12 /* Extension.swift */; };
 		2640F3F623C042C600EA2E12 /* ProductManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F523C042C600EA2E12 /* ProductManager.swift */; };
 		2640F3FA23C0A26600EA2E12 /* GamePlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2640F3F923C0A26600EA2E12 /* GamePlayManager.swift */; };
+		26B8BF7A23D21ACF00F4DAD9 /* Carosello-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 26B8BF7823D217F400F4DAD9 /* Carosello-Regular.ttf */; };
+		26FD83DA23C1E2A1002A2F70 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD83D923C1E2A1002A2F70 /* SettingsViewController.swift */; };
+		26FD83DC23C374EC002A2F70 /* WinningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD83DB23C374EC002A2F70 /* WinningViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +49,9 @@
 		2640F3F323BF75F900EA2E12 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		2640F3F523C042C600EA2E12 /* ProductManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductManager.swift; sourceTree = "<group>"; };
 		2640F3F923C0A26600EA2E12 /* GamePlayManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GamePlayManager.swift; sourceTree = "<group>"; };
+		26B8BF7823D217F400F4DAD9 /* Carosello-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Carosello-Regular.ttf"; sourceTree = "<group>"; };
+		26FD83D923C1E2A1002A2F70 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		26FD83DB23C374EC002A2F70 /* WinningViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinningViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +92,7 @@
 				2640F3E023BD9C5200EA2E12 /* Manager */,
 				2640F3DB23BC602A00EA2E12 /* ViewController */,
 				2640F3CD23BC5F9700EA2E12 /* Main.storyboard */,
+				26B8BF7923D218D600F4DAD9 /* Font */,
 				2640F3D023BC5F9B00EA2E12 /* Assets.xcassets */,
 				2640F3D223BC5F9B00EA2E12 /* LaunchScreen.storyboard */,
 				2640F3D523BC5F9B00EA2E12 /* Info.plist */,
@@ -99,6 +106,8 @@
 				2640F3EF23BF54B900EA2E12 /* GridViewController.swift */,
 				2640F3CB23BC5F9700EA2E12 /* DashboardViewController.swift */,
 				2640F3DC23BCDF2B00EA2E12 /* GameViewController.swift */,
+				26FD83D923C1E2A1002A2F70 /* SettingsViewController.swift */,
+				26FD83DB23C374EC002A2F70 /* WinningViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -130,6 +139,14 @@
 				2640F3EB23BE2AE700EA2E12 /* Products.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		26B8BF7923D218D600F4DAD9 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				26B8BF7823D217F400F4DAD9 /* Carosello-Regular.ttf */,
+			);
+			path = Font;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,6 +209,7 @@
 			files = (
 				2640F3D423BC5F9B00EA2E12 /* LaunchScreen.storyboard in Resources */,
 				2640F3D123BC5F9B00EA2E12 /* Assets.xcassets in Resources */,
+				26B8BF7A23D21ACF00F4DAD9 /* Carosello-Regular.ttf in Resources */,
 				2640F3CF23BC5F9700EA2E12 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -211,12 +229,14 @@
 				2640F3C823BC5F9700EA2E12 /* AppDelegate.swift in Sources */,
 				2640F3E823BDFB7700EA2E12 /* ProductImages.swift in Sources */,
 				2640F3EE23BE2CD600EA2E12 /* ImageCachingManager.swift in Sources */,
+				26FD83DA23C1E2A1002A2F70 /* SettingsViewController.swift in Sources */,
 				2640F3F623C042C600EA2E12 /* ProductManager.swift in Sources */,
 				2640F3F423BF75F900EA2E12 /* Extension.swift in Sources */,
 				2640F3CA23BC5F9700EA2E12 /* SceneDelegate.swift in Sources */,
 				2640F3E523BDF8A600EA2E12 /* Product.swift in Sources */,
 				2640F3F223BF552900EA2E12 /* GridCell.swift in Sources */,
 				2640F3FA23C0A26600EA2E12 /* GamePlayManager.swift in Sources */,
+				26FD83DC23C374EC002A2F70 /* WinningViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

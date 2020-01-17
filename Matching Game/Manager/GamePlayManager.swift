@@ -12,18 +12,42 @@ import Foundation
 final class GamePlayManager: ObservableObject {
     static let shared = GamePlayManager()
 
-    private init() {}
+    private init() { }
 
-    public var foundPairs = CurrentValueSubject<Int,Never>(0)
+    @Published
+    public var numOfMatch: Int = 2 {
+        didSet {
+            self.reset()
+        }
+    }
 
-    public var numOfMatch = CurrentValueSubject<Int,Never>(2)
+    @Published
+    public var foundPairs: Int = 0 {
+        didSet {
+            if self.foundPairs == self.matchToWin {
+                self.isWinning.value = true
+            }
+        }
+    }
 
+    public var isWinning = CurrentValueSubject<Bool,Never>(false)
     public var numOfGrid = CurrentValueSubject<Int,Never>(3)
 
     public var selectedItemsIndex = [IndexPath]()
-    public var selectedItem: Int? 
+    public var selectedItemId: Int?
+    public var movesCount = 0
+    public var isSelecting = false
 
-    private let pairsToWin = 10
+    private let matchToWin = 3
+
+    public func reset() {
+        self.isWinning.value = false
+        self.foundPairs = 0
+        self.movesCount = 0
+        self.selectedItemId = nil
+        self.selectedItemsIndex = [IndexPath]()
+        self.isSelecting = false
+    }
 
 
 }

@@ -18,6 +18,8 @@ final class GameViewController: UIViewController {
 
     private var cardCancellable: AnyCancellable?
     private var pointCancellable: AnyCancellable?
+    private var winCancellable: AnyCancellable?
+    private var gridCancellable: AnyCancellable?
 
     private let gridVC: GridViewController = {
         return GridViewController()
@@ -26,27 +28,34 @@ final class GameViewController: UIViewController {
     private let playerPointLbl: UILabel = {
         let label = UILabel()
         label.text = "Points: 0"
+        label.textColor = .systemBackground
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.sizeToFit()
+        label.font = UIFontMetrics(forTextStyle: .headline)
+            .scaledFont(for: UIFont(name: "AvenirNext-Medium",
+                                    size: UIFont.labelFontSize) ?? UIFont.systemFont(ofSize: UIFont.labelFontSize))
         return label
     }()
 
-    private let settingBtn: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .organize,
-                        target: self,
-                        action: #selector(gameSettings))
+    private lazy var settingBtn: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: UIImage(named: "gear"),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(gameSettings))
         return button
     }()
 
-    private let shuffleBtn: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .add,
-                        target: self,
-                        action: #selector(gameSettings))
+    private lazy var shuffleBtn: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: UIImage(named: "repeat"),
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(shuffleCard))
         return button
     }()
 
     private lazy var activityView: UIActivityIndicatorView = {
         let activityView = UIActivityIndicatorView()
-        activityView.color = .black
+        activityView.color = .systemGray6
         activityView.center = self.view.center
         activityView.startAnimating()
         return activityView
@@ -56,56 +65,86 @@ final class GameViewController: UIViewController {
         super.viewDidLoad()
         self.view.addSubview(activityView)
 
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .systemBackground
         
-        navigationItem.rightBarButtonItems = [settingBtn]
+        navigationItem.rightBarButtonItems = [settingBtn, shuffleBtn]
 
         cardCancellable = networkManager.loadCard().sink { products in
             DispatchQueue.main.async {
                 self.productManager.products = products
-                self.initCard(products: self.productManager.products)
+                self.initCard()
                 self.activityView.stopAnimating()
             }
         }
+
+        winCancellable = self.gamePM.isWinning.sink(receiveValue: {
+            if $0 {
+                DispatchQueue.main.async {
+                    self.initWinningVC()
+                }
+            }
+        })
 
         self.initPoints()
     }
 
     deinit {
-        pointCancellable?.cancel()
         cardCancellable?.cancel()
+        pointCancellable?.cancel()
+        winCancellable?.cancel()
     }
 
     private func initPoints() {
-        self.view.addSubview(playerPointLbl)
+        let view = UIView()
+        view.backgroundColor = .systemBlue
+        view.layer.cornerRadius = 10
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.sizeToFit()
+        self.view.addSubview(view)
+        view.addSubview(playerPointLbl)
 
         NSLayoutConstraint.activate([
-            playerPointLbl.heightAnchor.constraint(equalToConstant: 50),
-            playerPointLbl.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            playerPointLbl.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+            view.heightAnchor.constraint(equalToConstant: 50),
+            view.widthAnchor.constraint(equalToConstant: 100),
+            view.topAnchor.constraint(equalTo: self.view.topAnchor, constant: topbarHeight),
+            view.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
         ])
 
-        pointCancellable = gamePM.foundPairs.sink { point in
+        NSLayoutConstraint.activate([
+            playerPointLbl.topAnchor.constraint(equalTo: view.topAnchor),
+            playerPointLbl.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            playerPointLbl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+
+        pointCancellable = gamePM.$foundPairs.sink { point in
             self.playerPointLbl.text = "Points:  \(point)"
         }
     }
 
-    private func initCard(products: Products) {
-        DispatchQueue.main.async {
-            self.gridVC.products = self.productManager.products.products
-            let height = self.navigationController?.navigationBar.bounds.size.height
-            let frame = CGRect(x: 0,
-                               y: -(height ?? self.topbarHeight),
-                               width: self.view.bounds.width,
-                               height: self.view.bounds.height - self.topbarHeight - self.playerPointLbl.frame.height*2);
-            self.add(self.gridVC, frame: frame)
-        }
+    private func initCard() {
+        let frame = CGRect(x: 0,
+                           y: -( self.playerPointLbl.frame.height),
+                           width: self.view.bounds.width,
+                           height: self.view.bounds.height - self.topbarHeight );
+        self.add(self.gridVC, frame: frame)
+    }
+
+    private func initWinningVC() {
+        let winningVC = WinningViewController()
+        winningVC.gridVC = gridVC
+        self.present(winningVC, animated: true)
     }
 
     @objc
     private func gameSettings() {
-
+        let settingsVC = SettingsViewController()
+        self.present(settingsVC, animated: true)
     }
 
-
+    @objc
+    private func shuffleCard() {
+        self.gridVC.resetItems()
+        self.gridVC.shuffleCard()
+        self.gamePM.reset()
+    }
 }

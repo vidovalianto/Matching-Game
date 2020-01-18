@@ -14,6 +14,8 @@ Feature :
 Changing grid on the fly while playing the game. Using the latest Combine, CollectionView and Diffable Data source this game able to change grid while playing the game.
 
 Just tap the setting button, input the number of grid and Voila!
+![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/Simulator%20Screen%20Shot%20-%20iPhone%2011%20Pro%20Max%20-%202020-01-18%20at%2002.46.55.png "Logo Title Text 1"){:height="36px" width="36px"}
+
 
 
 

@@ -1,4 +1,4 @@
-# Shopify Mobile Developer Project - RoboMatch
+# RoboMatch
 
 Classic game of finding all matching cards. Having fun while practicing your memory skills
 
@@ -24,24 +24,22 @@ Just tap the setting button, input the number of grid and Voila!
 
 
 ## Changing Number of Match
-Want to challenge yourself? changing number of matched cards never been quicker and easier. Using the latest Combine, CollectionView and Diffable Data source this game able to change the number of card in the deck reactively.
+Using the latest Combine, CollectionView and Diffable Data source this game able to change the number of card in the deck reactively.
 
 Changing both grid and match with ease.
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif-2.gif)
 
 ### Welcome Screen
-Simplistic welcome screen yet rugged font, raising your adrenaline. 
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif.gif)
 
 ### Match Found
-What happen when a match is found? here you go
+What happen when a match is found?
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif-5.gif)
 
 ### Winning Screen
-Nothing beats a good celebration after working out with your brain. 
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif-4.gif)
 

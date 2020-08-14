@@ -25,11 +25,15 @@ final class NetworkManager {
 
     private init() {}
 
-    public func loadCard() -> AnyPublisher<Products, Never> {
+    // MARK: - MEMORY LEAK
+    // I did mapError instead of replace error
+    public func loadCard() -> AnyPublisher<Products, Error> {
         return URLSession.shared.dataTaskPublisher(for: self.baseURL)
-            .map { $0.data }
+            .mapError({ error -> Error in
+                return error
+            })
+            .tryMap { $0.data }
             .decode(type: Products.self, decoder: JSONDecoder())
-            .replaceError(with: Products(products: [Product]()))
             .subscribe(on: backgroundQueue)
             .receive(on: RunLoop.main)
             .eraseToAnyPublisher()
@@ -38,7 +42,7 @@ final class NetworkManager {
     public func loadImage(url: URL,
                           queue: OperationQueue) -> AnyPublisher<UIImage?, Never> {
         return URLSession.shared.dataTaskPublisher(for: url)
-            .map { (data, _) -> UIImage? in return UIImage(data: data) }
+            .tryMap { (data, _) -> UIImage? in return UIImage(data: data) }
             .catch { error in return Just(nil) }
             .subscribe(on: queue)
             .receive(on: RunLoop.main)

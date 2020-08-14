@@ -9,6 +9,8 @@
 import Combine
 import UIKit
 
+// Memory leak because:
+// 1. I didn't remove combine cancellable correctly
 class GridCell: UICollectionViewCell {
     static let reuseIdentifier = "grid-cell"
     public var productImages: ProductImages?
@@ -52,7 +54,6 @@ class GridCell: UICollectionViewCell {
         configure()
     }
 
-    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("not implemented")
     }
@@ -67,6 +68,11 @@ class GridCell: UICollectionViewCell {
 
         animator?.stopAnimation(true)
         cancellable?.cancel()
+        cancellable = nil
+    }
+
+    deinit {
+        cancellable = nil
     }
 
     public func configureData(productImages: ProductImages) {
@@ -90,11 +96,6 @@ class GridCell: UICollectionViewCell {
             self.backgroundImage.alpha = 1.0
             self.foregroundImage.alpha = 1.0
         })
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.animator?.stopAnimation(true)
-            self.animator?.finishAnimation(at: .current)
-        }
     }
 
     private func loadImage(productImages: ProductImages) -> AnyPublisher<UIImage?, Never> {
@@ -129,14 +130,6 @@ extension GridCell {
             backgroundImage.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
             backgroundImage.topAnchor.constraint(equalTo: cardView.topAnchor),
             backgroundImage.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
-        ])
-
-        cardView.addSubview(foregroundView)
-        NSLayoutConstraint.activate([
-            foregroundView.leadingAnchor.constraint(equalTo: cardView.leadingAnchor),
-            foregroundView.trailingAnchor.constraint(equalTo: cardView.trailingAnchor),
-            foregroundView.topAnchor.constraint(equalTo: cardView.topAnchor),
-            foregroundView.bottomAnchor.constraint(equalTo: cardView.bottomAnchor)
         ])
 
         foregroundView.addSubview(foregroundImage)

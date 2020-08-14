@@ -22,10 +22,9 @@ final class ProductManager: ObservableObject {
         })
     }
 
-    @Published
-    public var products: Products = Products(products: [Product]()){
+    public var products: [Product] = [] {
         didSet {
-            self.productImages = self.products.products.compactMap { return $0.images.first }
+            self.productImages = self.products.map({ return $0.images.first! })
         }
     }
 

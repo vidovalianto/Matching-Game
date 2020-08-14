@@ -45,20 +45,24 @@ final class GridViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        gridCancellable = self.gamePM.numOfGrid.sink(receiveValue: {
-            self.col = $0
-            if let collectionView = self.collectionView {
-                collectionView.setCollectionViewLayout(self.createLayout(),
+        // MARK: - QUESTION why previously this one doesn't create retain cycle
+        gridCancellable = self.gamePM.numOfGrid.sink(receiveValue: { [weak self] in
+            guard let this = self else { return }
+            this.col = $0
+            if let collectionView = this.collectionView {
+                collectionView.setCollectionViewLayout(this.createLayout(),
                                                        animated: true)
             }
 
         })
 
-        itemsCancellable = self.productManager.items.sink(receiveValue: { items in
-            self.resetItems()
-            self.items = items
+        // MARK: - QUESTION why previously this one doesn't create retain cycle
+        itemsCancellable = self.productManager.items.sink(receiveValue: { [weak self] items in
+            guard let this = self else { return }
+            this.resetItems()
+            this.items = items
             DispatchQueue.main.async {
-                self.dataSource.apply(self.createSnapshot(),
+                this.dataSource.apply(this.createSnapshot(),
                                       animatingDifferences: true)
             }
         })
@@ -67,7 +71,7 @@ final class GridViewController: UIViewController {
         configureDataSource()
     }
 
-    deinit {
+    override func viewDidDisappear(_ animated: Bool) {
         cancellable?.cancel()
         gridCancellable?.cancel()
         itemsCancellable?.cancel()
@@ -76,7 +80,7 @@ final class GridViewController: UIViewController {
 
 extension GridViewController {
     private func createLayout() -> UICollectionViewLayout {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / CGFloat(col)),
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / CGFloat(3)),
                                               heightDimension: .fractionalHeight(1.0))
 
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -108,9 +112,12 @@ extension GridViewController {
         collectionView.delegate = self
     }
 
+    // MARK: - MEMORY LEAK
+    // retain cycle in this part
+    // fix by making self unowned
     private func configureDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Section, Int>(collectionView: collectionView)
-        { (collectionView: UICollectionView, indexPath: IndexPath, identifier: Int)
+        { [unowned self] (collectionView: UICollectionView, indexPath: IndexPath, identifier: Int)
             -> UICollectionViewCell? in
             // Get a cell of the desired kind.
             guard let cell = collectionView.dequeueReusableCell(
@@ -150,25 +157,17 @@ extension GridViewController {
     }
 }
 
+// MARK: - MEMORY LEAK
+// leak object in here
 extension GridViewController: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.gamePM.movesCount += 1
 
-
         if !self.items[indexPath[1]].isMatch && !self.gamePM.selectedItemsIndex.contains(indexPath) {
             matchCheck(indexPath: indexPath)
             hideUnhideImage(index: indexPath[1])
-            dataSource.apply(createSnapshot(), animatingDifferences: true)
+            dataSource.apply(createSnapshot(), animatingDifferences: true) // createSnapshot has retain cycle
             collectionView.deselectItem(at: indexPath, animated: false)
-        }
-    }
-
-    private func hideUnhideImage(index: Int) {
-        //hide / unhide foregroundimage
-        if let clickindex = self.items[index].clickIndex.firstIndex(of: index) {
-            self.items[index].clickIndex.remove(at: clickindex)
-        } else {
-            self.items[index].clickIndex.append(index)
         }
     }
 
@@ -200,6 +199,15 @@ extension GridViewController: UICollectionViewDelegate {
             self.gamePM.selectedItemsIndex = [IndexPath]()
             self.gamePM.selectedItemId = nil
             self.gamePM.isSelecting = false
+        }
+    }
+
+    private func hideUnhideImage(index: Int) {
+        //hide / unhide foregroundimage
+        if let clickindex = self.items[index].clickIndex.firstIndex(of: index) {
+            self.items[index].clickIndex.remove(at: clickindex)
+        } else {
+            self.items[index].clickIndex.append(index)
         }
     }
 }

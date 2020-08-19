@@ -10,6 +10,10 @@ import Combine
 import Foundation
 import UIKit
 
+// MARK: - MEMORY LEAK
+// Memory leak because:
+// 1. I didn't remove combine cancellable correctly
+// 2. There is simple cycle when doing network calls using Combine for var cardCancellable
 final class GameViewController: UIViewController {
     private let gamePM = GamePlayManager.shared
     private let imageCM = ImageCachingManager.shared
@@ -21,9 +25,15 @@ final class GameViewController: UIViewController {
     private var winCancellable: AnyCancellable?
     private var gridCancellable: AnyCancellable?
 
+    // MARK: - QUESTION why previously this one doesn't create retain cycle
     private let gridVC: GridViewController = {
         return GridViewController()
     }()
+
+    // shouldn't it be weak?
+    //    private weak var gridVC: GridViewController? = {
+    //        return GridViewController()
+    //    }()
 
     private let playerPointLbl: UILabel = {
         let label = UILabel()
@@ -66,16 +76,20 @@ final class GameViewController: UIViewController {
         self.view.addSubview(activityView)
 
         self.view.backgroundColor = .systemBackground
-        
+
         navigationItem.rightBarButtonItems = [settingBtn, shuffleBtn]
 
-        cardCancellable = networkManager.loadCard().sink { products in
+        // causing simple cycle
+        // fixed by making self weak
+        cardCancellable = networkManager.loadCard().sink(receiveCompletion: { error in
+            print(error)
+        }, receiveValue: { [weak self] products in
             DispatchQueue.main.async {
-                self.productManager.products = products
-                self.initCard()
-                self.activityView.stopAnimating()
+                self?.productManager.products = products.products
+                self?.initCard() // causing another memory leak
+                self?.activityView.stopAnimating()
             }
-        }
+        })
 
         winCancellable = self.gamePM.isWinning.sink(receiveValue: {
             if $0 {
@@ -88,7 +102,8 @@ final class GameViewController: UIViewController {
         self.initPoints()
     }
 
-    deinit {
+    // need to remove observer in viewDidDisappear
+    override func viewDidDisappear(_ animated: Bool) {
         cardCancellable?.cancel()
         pointCancellable?.cancel()
         winCancellable?.cancel()

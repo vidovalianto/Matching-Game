@@ -1,8 +1,7 @@
 # RoboMatch
 
-Classic game of finding all matching cards. Having fun while practicing your memory skills
-
-Tap a face down card and it will show a fun character. Don't forget to find all the same character in the deck!
+A classic game of finding all matching cards. Having fun while practicing your memory skills
+Tap a face-down card and it will show a fun character. Don't forget to find all the same characters in the deck!
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/Simulator%20Screen%20Shot%20-%20iPhone%2011%20Pro%20Max%20-%202020-01-18%20at%2002.46.55.png)
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/Simulator%20Screen%20Shot%20-%20iPhone%2011%20Pro%20Max%20-%202020-01-18%20at%2002.47.20.png)
@@ -10,21 +9,21 @@ Tap a face down card and it will show a fun character. Don't forget to find all 
 
 
 Feature :
- - Easily set up the number of grid. 
- - Easily set up the number of character in the deck that you need find. 
- - Tapping Shuffle button will restart the game and shuffle the deck.
+ - Easily set up the number of the grid. 
+ - Easily set up the number of characters in the deck that you need to find. 
+ - Tapping the Shuffle button will restart the game and shuffle the deck.
 
 
 ## Changing Grid
-Changing grid on the fly while playing the game. Using the latest Combine, CollectionView and Diffable Data source this game able to change grid while playing the game.
+Changing the grid on the fly while playing the game. Using the latest Combine, CollectionView, and Diffable Data source this game able to change the grid while playing the game.
 
-Just tap the setting button, input the number of grid and Voila!
+Just tap the setting button, input the number of the grid, and Voila!
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif-3.gif)
 
 
 ## Changing Number of Match
-Using the latest Combine, CollectionView and Diffable Data source this game able to change the number of card in the deck reactively.
+Using the latest Combine, CollectionView, and Diffable Data source this game able to change the number of the card in the deck reactively.
 
 Changing both grid and match with ease.
 
@@ -35,7 +34,7 @@ Changing both grid and match with ease.
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif.gif)
 
 ### Match Found
-What happen when a match is found?
+What happens when a match is found?
 
 ![alt text](https://github.com/vidovalianto/-Matching-Game/raw/master/Screenshot%20and%20Gif/ezgif.com-video-to-gif-5.gif)
 
